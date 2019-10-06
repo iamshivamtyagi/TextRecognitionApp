@@ -82,14 +82,14 @@ public class MainActivity extends AppCompatActivity {
     //handle actionbar clicks
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         if (id == R.id.addImage) {
             showImageImportDialog();
         }
         if (id == R.id.settings) {
-
+            Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+        dialog.create().show();
     }
 
     private void pickGallery() {
@@ -236,14 +236,13 @@ public class MainActivity extends AppCompatActivity {
                         .setGuidelines(CropImageView.Guidelines.ON) //enable image guidelines
                         .start(this);
             }
-            super.onActivityResult(requestCode, resultCode, data);
         }
         //get cropped image
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-
+                Uri resultUri = result.getUri(); //get image URI
+                //set image to image view
                 mPreviewIv.setImageURI(resultUri);
 
                 //get drawable bitmap for text recognition
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     SparseArray<TextBlock> items = recognizer.detect(frame);
                     StringBuilder stringBuilder = new StringBuilder();
                     //get text from string builder until there is no text left
-                    for (int i = 0; i < stringBuilder.length(); i++) {
+                    for (int i = 0; i < items.size(); i++) {
                         TextBlock myItem = items.valueAt(i);
                         stringBuilder.append(myItem.getValue());
                         stringBuilder.append("\n");
@@ -272,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "" + e, Toast.LENGTH_SHORT).show();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }

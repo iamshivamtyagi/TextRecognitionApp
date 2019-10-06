@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     tools:context=".MainActivity">
 
     <ScrollView
@@ -42,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="all"
                         android:background="@null"
-                        android:hint="Click+Button to add image"
+                        android:hint=""
                         android:padding="5dp"
                         android:textColor="#000000" />
 
@@ -82,7 +83,6 @@
                         android:layout_height="wrap_content"
                         android:autofillHints="all"
                         android:background="@null"
-                        android:hint="Click+Button to add image"
                         android:padding="5dp"
                         android:textColor="#000000" />
 

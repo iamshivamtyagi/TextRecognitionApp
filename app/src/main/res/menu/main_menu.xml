@@ -4,11 +4,11 @@
 
     <item
         android:id="@+id/addImage"
+        android:icon="@drawable/ic_action_image"
         android:title="Add Image"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_action_image"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/settings"
-        android:title="setting"/>
+        android:title="Settings" />
 </menu>
