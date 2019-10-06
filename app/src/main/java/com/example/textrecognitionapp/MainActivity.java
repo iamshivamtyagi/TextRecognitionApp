@@ -59,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
         mPreviewIv = findViewById(R.id.imageIv);
 
         //camera permission
-        cameraPermission = new String {
-            Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
-        } ;
+        cameraPermission = new String[]{
+                Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
 
         //storage permission
-        storagePermission = new String {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        } ;
+        storagePermission = new String[]{
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
 
     }
 
@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                         .setGuidelines(CropImageView.Guidelines.ON) //enable image guidelines
                         .start(this);
             }
+            super.onActivityResult(requestCode, resultCode, data);
         }
         //get cropped image
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -245,17 +246,19 @@ public class MainActivity extends AppCompatActivity {
 
                 mPreviewIv.setImageURI(resultUri);
 
-                BitmapDrawable bitmap = (BitmapDrawable) mPreviewIv.getDrawable();
+                //get drawable bitmap for text recognition
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) mPreviewIv.getDrawable();
+                Bitmap bitmap = bitmapDrawable.getBitmap();
 
                 TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
-                if(!recognizer.isOperational()){
-                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
-                }else{
+                if (!recognizer.isOperational()) {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+                } else {
                     Frame frame = new Frame.Builder().setBitmap(bitmap).build();
                     SparseArray<TextBlock> items = recognizer.detect(frame);
-                    StringBuilder stringBuilder =  new StringBuilder();
+                    StringBuilder stringBuilder = new StringBuilder();
                     //get text from string builder until there is no text left
-                    for (int i = 0 ; i < stringBuilder.length() ; i++){
+                    for (int i = 0; i < stringBuilder.length(); i++) {
                         TextBlock myItem = items.valueAt(i);
                         stringBuilder.append(myItem.getValue());
                         stringBuilder.append("\n");
@@ -263,10 +266,10 @@ public class MainActivity extends AppCompatActivity {
                     //set text to edit text
                     mResultEt.setText(stringBuilder.toString());
                 }
-            }else if(requestCode== CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 //if there any error show it
                 Exception e = result.getError();
-                Toast.makeText(this,""+e,Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "" + e, Toast.LENGTH_SHORT).show();
             }
         }
     }
