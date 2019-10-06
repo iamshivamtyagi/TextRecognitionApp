@@ -2,6 +2,7 @@ package com.example.textrecognitionapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setSubtitle("Click + button to insert Image");
 
         mResultEt = findViewById(R.id.et_result);
         mPreviewIv = findViewById(R.id.imageIv);
@@ -252,9 +256,17 @@ public class MainActivity extends AppCompatActivity {
                     StringBuilder stringBuilder =  new StringBuilder();
                     //get text from string builder until there is no text left
                     for (int i = 0 ; i < stringBuilder.length() ; i++){
-
+                        TextBlock myItem = items.valueAt(i);
+                        stringBuilder.append(myItem.getValue());
+                        stringBuilder.append("\n");
                     }
+                    //set text to edit text
+                    mResultEt.setText(stringBuilder.toString());
                 }
+            }else if(requestCode== CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE){
+                //if there any error show it
+                Exception e = result.getError();
+                Toast.makeText(this,""+e,Toast.LENGTH_SHORT).show();
             }
         }
     }
