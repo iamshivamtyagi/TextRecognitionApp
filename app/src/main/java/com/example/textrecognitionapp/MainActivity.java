@@ -12,14 +12,23 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.TextBlock;
+import com.google.android.gms.vision.text.TextRecognizer;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -210,10 +219,44 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //got image from camera
-        if(resultCode== RESULT_OK){
-
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_PICK_GALLERY_CODE) {
+                //got image from gallery now crop it
+                CropImage.activity(data.getData())
+                        .setGuidelines(CropImageView.Guidelines.ON) //enable image guidelines
+                        .start(this);
+            }
+            if (requestCode == IMAGE_PICK_CAMERA_CODE) {
+                //got image from camera now crop it
+                CropImage.activity(image_uri)
+                        .setGuidelines(CropImageView.Guidelines.ON) //enable image guidelines
+                        .start(this);
+            }
         }
+        //get cropped image
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
 
+                mPreviewIv.setImageURI(resultUri);
+
+                BitmapDrawable bitmap = (BitmapDrawable) mPreviewIv.getDrawable();
+
+                TextRecognizer recognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+                if(!recognizer.isOperational()){
+                    Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
+                }else{
+                    Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+                    SparseArray<TextBlock> items = recognizer.detect(frame);
+                    StringBuilder stringBuilder =  new StringBuilder();
+                    //get text from string builder until there is no text left
+                    for (int i = 0 ; i < stringBuilder.length() ; i++){
+
+                    }
+                }
+            }
+        }
     }
 
 }
